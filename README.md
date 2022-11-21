@@ -4,11 +4,8 @@ This project implements [Cool](https://dl.acm.org/doi/10.1145/381841.381847) lan
 ## Requirements
 The project requires LLVM libraries installed for the host system. See the instructions at https://llvm.org/docs/GettingStarted.html#getting-started-with-llvm.
 
-## Cool Langague
-
-
-## Project Strcture
-## Compile and Run
+## Project Structure 
+## Build the Compiler and Run Examples 
 ## Generate Parser and Lexer
 ## Running Tests
 
