@@ -4,6 +4,8 @@
 #include "llvm/ADT/StringRef.h"
 #include "llvm/Support/MemoryBuffer.h"
 
+using namespace std;
+
 class Lexer;
 
 class Token {
@@ -11,54 +13,54 @@ class Token {
 
 public:
   enum TokenType : unsigned short {
-    unknown, // unknown token
-    eof,     // end of file
+    UNKNOWN,     // unknown token
+    END_OF_FILE, // end of file
 
-    ident,  // identifiers
-    number, // number
+    IDENT,  // identifiers
+    NUMBER, // number
 
     // operators
-    assign,    // "="
-    plus,      //  "+"
-    minus,     // "-"
-    bang,      // "!
-    asterrisk, // "*"
-    slash,     // "/"
+    ASSIGN,    // "="
+    PLUS,      //  "+"
+    MINUS,     // "-"
+    BANG,      // "!
+    ASTERRISK, // "*"
+    SLASH,     // "/"
 
-    lt, // "<"
-    gt, // ">"
+    LT, // "<"
+    GT, // ">"
 
-    eq,     // "=="
-    not_eq, // "!"
+    EQ,    // "=="
+    NOTEQ, // "!"
 
     // delimiters
-    comma,     // ","
-    semicolon, // ";"
+    COMMA,     // ","
+    SEMICOLON, // ";"
 
-    lparan, // "("
-    rparan, // ")"
-    lbrace, // "{"
-    rbrace, // "}"
+    LPARAN, // "("
+    RPARAN, // ")"
+    LBRACE, // "{"
+    RBRACE, // "}"
 
     // keywords
-    class,
-    else,
-    false,
-    fi,
-    if,
-    inherits,
-    isvoid,
-    let,
-    loop,
-    pool,
-    then,
-    while,
-    case,
-    esac,
-    new,
-    of,
-    not,
-    true
+    CLASS,
+    ELSE,
+    FALSE,
+    FI,
+    IF,
+    INHERITS,
+    ISVOID,
+    LET,
+    LOOP,
+    POOL,
+    THEN,
+    WHILE,
+    CASE,
+    ESAC,
+    NEW,
+    OF,
+    NOT,
+    TRUE
   };
 
 private:
@@ -72,7 +74,7 @@ public:
   bool isOneOf(TokenType T1, TokenType T2) const { return is(T1) || is(T2); }
   template <typename... Ts>
   bool isOneOf(TokenType T1, TokenType T2, Ts... Ks) const {
-    return is(K1) || isOneOf(K2, Ks...);
+    return is(T1) || isOneOf(T2, Ks...);
   }
 };
 
