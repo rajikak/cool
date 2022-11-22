@@ -22,7 +22,7 @@ string read(const string file_name) {
 
 int main() {
 
-	string path = "suite"; // test suite for the compiler
+	string path = "/Users/kumarasiri/github/cool-llvm/suite"; // test suite for the compiler
 
 	string content;
 	for(const auto & file: filesystem::directory_iterator(path)) {
