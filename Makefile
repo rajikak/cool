@@ -1,5 +1,10 @@
 default:
-	clang++ -std=c++17 src/*.cpp `llvm-config --cxxflags --ldflags --system-libs --libs core` -o cool
+	clang++ -I/Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk/usr/include/c++/v1/ \
+			-I/Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk/usr/include/ \
+			-I/opt/homebrew/include \
+			-L/Library/Developer/CommandLineTools/SDKs/MacOSX13.0.sdk/usr/lib/ \
+			-L/opt/homebrew/lib/ \
+		-std=c++20 src/*.cpp `llvm-config --cxxflags --ldflags --system-libs --libs core` -o cool
 
 f: # format
 	clang-format -i src/*.cpp src/*.h

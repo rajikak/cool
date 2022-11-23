@@ -80,15 +80,16 @@ public:
 
 class Lexer {
 private:
-  string input;     // input for the lexer
-  int position;     // current position in input
-  int readPosition; // current reading position in input
-  char ch;          // current char under examination
+  const char *BufferStart; // input buffer is a C string ('\0')
+  const char *BufferPtr;
 
-  void readChar();
+  void toToken(Token &Result, const char *TokEnd, Token::TokenType Kind);
 
 public:
-  Lexer(const llvm::StringRef &Buffer) {}
+  Lexer(const llvm::StringRef &Buffer) {
+    BufferStart = Buffer.begin();
+    BufferPtr = BufferStart;
+  }
 
   void nextToken(Token &token);
 };
