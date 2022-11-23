@@ -41,5 +41,5 @@ void Lexer::newToken(Token &Result, const char *TokEnd, Token::TokenType Type) {
 }
 
 void Lexer::printToken(Token Tok) {
-	cout << "{Type: " << token.getType() << ", Literal: " << token.getType() << "}" << endl;
+	cout << "{Type: " << Tok.getType() << ", Literal: " << Tok.getType() << "}" << endl;
 }

@@ -92,7 +92,7 @@ public:
   }
 
   void nextToken(Token &Tok);
-  void printToken(Token &Tok);
+  void printToken(Token Tok);
 };
 
 #endif

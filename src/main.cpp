@@ -37,7 +37,6 @@ int main() {
 	Lexer Lex(content);
 	Token Tok;
 	Lex.nextToken(Tok);
-
-	charinfo::printToken(Tok);
+	Lex.printToken(Tok);
   }
 }
