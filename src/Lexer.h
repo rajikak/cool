@@ -83,7 +83,7 @@ private:
   const char *BufferStart; // input buffer is a C string ('\0')
   const char *BufferPtr;
 
-  void toToken(Token &Result, const char *TokEnd, Token::TokenType Kind);
+  void newToken(Token &Result, const char *TokEnd, Token::TokenType TokenType);
 
 public:
   Lexer(const llvm::StringRef &Buffer) {

@@ -27,7 +27,15 @@ void Lexer::nextToken(Token &token) {
     token.Type = Token::END_OF_FILE;
   }
 
-  if (charinfo::isLetter(*BufferPtr)) {
+  char ch = *BufferPtr;
+  switch (ch) {
+ 	case '=':
 
   }
+
+}
+
+void Lexer::newToken(Token &Result, const char *TokEnd, Token::TokenType Type) {
+
+
 }
