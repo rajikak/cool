@@ -91,7 +91,8 @@ public:
     BufferPtr = BufferStart;
   }
 
-  void nextToken(Token &token);
+  void nextToken(Token &Tok);
+  void printToken(Token &Tok);
 };
 
 #endif

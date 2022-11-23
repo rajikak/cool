@@ -5,6 +5,11 @@
 #include <string>
 #include <vector>
 
+#include "Lexer.h"
+#include "llvm/Support/CommandLine.h"
+#include "llvm/Support/InitLLVM.h"
+#include "llvm/Support/raw_ostream.h"
+
 using namespace std;
 
 string read(const string file_name) {
@@ -28,6 +33,11 @@ int main() {
   string content;
   for (const auto &file : filesystem::directory_iterator(path)) {
     content = read(file.path());
-    cout << content << endl;
+	cout << "parsing: " << file.path() << endl;
+	Lexer Lex(content);
+	Token Tok;
+	Lex.nextToken(Tok);
+
+	charinfo::printToken(Tok);
   }
 }

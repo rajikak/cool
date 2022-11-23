@@ -30,12 +30,16 @@ void Lexer::nextToken(Token &token) {
   char ch = *BufferPtr;
   switch (ch) {
  	case '=':
-
+		cout << "process equals\n";
+	default:
+		cout << "process identifiers and key words\n";
   }
-
 }
 
 void Lexer::newToken(Token &Result, const char *TokEnd, Token::TokenType Type) {
 
+}
 
+void Lexer::printToken(Token Tok) {
+	cout << "{Type: " << token.getType() << ", Literal: " << token.getType() << "}" << endl;
 }
