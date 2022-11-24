@@ -9,6 +9,7 @@
 #include "llvm/Support/CommandLine.h"
 #include "llvm/Support/InitLLVM.h"
 #include "llvm/Support/raw_ostream.h"
+#include "llvm/ADT/StringRef.h"
 
 using namespace std;
 
@@ -30,15 +31,14 @@ int main() {
   string path =
       "/Users/kumarasiri/github/cool-llvm/suite"; // test suite for the compiler
 
-  string content;
   for (const auto &file : filesystem::directory_iterator(path)) {
-    content = read(file.path());
-	cout << content;
-    Lexer Lex(content);
+	string content = read(file.path());
+    cout << content.c_str();
+    Lexer Lex(content.c_str());
     Token Tok;
-     do {
-    Lex.nextToken(Tok);
-    // Lex.printToken(Tok);
+    do {
+      Lex.nextToken(Tok);
+      // Lex.printToken(Tok);
     } while (Tok.getType() != Token::END_OF_FILE);
   }
 }

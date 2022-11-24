@@ -13,25 +13,23 @@ class Token {
 
 public:
   enum TokenType : unsigned short {
-    UNKNOWN,     // unknown token
+    ILLEGAL,     // illegal token
     END_OF_FILE, // end of file
 
     IDENT,  // identifiers
     NUMBER, // number
 
     // operators
-    ASSIGN,    // "="
     PLUS,      //  "+"
     MINUS,     // "-"
-    BANG,      // "!
     ASTERRISK, // "*"
     SLASH,     // "/"
+    TIDLE,     // "~"
 
-    LT, // "<"
-    GT, // ">"
-
-    EQ,     // "=="
-    NOT_EQ, // "!="
+    ASSIGN, // "<-"
+    LT,     // "<"
+    LT_EQ,  // "<="
+    EQ,     // "="
 
     // delimiters
     COMMA,     // ","
@@ -46,7 +44,7 @@ public:
     CLASS,
     ELSE,
     FALSE,
-	TRUE,
+    TRUE,
     FI,
     IF,
     INHERITS,
