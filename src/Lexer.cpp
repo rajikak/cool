@@ -41,6 +41,7 @@ void Lexer::printToken(Token Tok) {
                                   {Token::CLASS, "class"},
                                   {Token::ELSE, "else"},
                                   {Token::FALSE, "false"},
+								  {Token::TRUE, "true"},
                                   {Token::FI, "fi"},
                                   {Token::INHERITS, "inherits"},
                                   {Token::ISVOID, "isvoid"},
@@ -53,6 +54,35 @@ void Lexer::printToken(Token Tok) {
 
   cout << "{Type: " << m[Tok.getType()]
        << ", Literal: " << Tok.getLiteral().str() << "}" << endl;
+}
+
+Token::TokenType Lexer::lookupIdent(llvm::StringRef ident){
+	map<string, Token::TokenType> keywords{
+		{"class", Token::CLASS},
+		{"else", Token::ELSE},
+		{"false", Token::FALSE},
+		{"true", Token::TRUE}, 
+		{"fi", Token::FI},
+		{"if", Token::IF},
+		{"inherits", Token::INHERITS},
+		{"isvoid", Token::ISVOID},
+		{"let", Token::LET},
+		{"loop", Token::LOOP},
+		{"pool", Token::POOL},
+		{"then", Token::THEN},
+		{"while", Token::WHILE},
+		{"case", Token::CASE},
+		{"esac", Token::ESAC},
+		{"new", Token::NEW},
+		{"of", Token::OF},
+		{"not", Token::NOT},
+	}; 
+
+	if (keywords.find(ident.str()) == keywords.end()) {
+		// this is an identifier
+		return Token::IDENT;
+	}
+	return keywords[ident.str()];
 }
 
 void Lexer::nextToken(Token &token) {
@@ -75,7 +105,7 @@ void Lexer::nextToken(Token &token) {
       while (charinfo::isLetter(*end))
         ++end;
       llvm::StringRef Literal(BufferPtr, end - BufferPtr);
-      newToken(token, end, Token::IDENT);
+      newToken(token, end, lookupIdent(Literal));
       printToken(token);
       return;
     } else if (charinfo::isDigit(*BufferPtr)) {

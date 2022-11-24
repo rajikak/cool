@@ -46,6 +46,7 @@ public:
     CLASS,
     ELSE,
     FALSE,
+	TRUE,
     FI,
     IF,
     INHERITS,
@@ -60,7 +61,6 @@ public:
     NEW,
     OF,
     NOT,
-    TRUE
   };
 
 private:
@@ -83,6 +83,7 @@ private:
   const char *BufferStart; // input buffer is a C string ('\0')
   const char *BufferPtr;
 
+  Token::TokenType lookupIdent(llvm::StringRef ident);
   void newToken(Token &Tok, const char *TokEnd, Token::TokenType TokenType);
   void printToken(Token Tok);
 
