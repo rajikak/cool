@@ -27,19 +27,34 @@ void Lexer::nextToken(Token &token) {
     token.Type = Token::END_OF_FILE;
   }
 
-  char ch = *BufferPtr;
-  switch (ch) {
+  switch (*BufferPtr) {
  	case '=':
-		cout << "process equals\n";
 	default:
-		cout << "process identifiers and key words\n";
+		if (charinfo::isLetter(*BufferPtr)) {
+			// identifier or a key word
+			const char *end = BufferPtr + 1;
+			while (charinfo::isLetter(*end))
+				++end;
+			llvm::StringRef Literal(BufferPtr, end - BufferPtr);
+			newToken(token, end, Token::IDENT);
+			printToken(token);
+			return;
+		} else if (charinfo::isDigit(*BufferPtr)) {
+
+		} else {
+			cout << "illegal token\n";
+		}
+
+		break;
   }
 }
 
-void Lexer::newToken(Token &Result, const char *TokEnd, Token::TokenType Type) {
-
+void Lexer::newToken(Token &Tok, const char *TokEnd, Token::TokenType Type) {
+	Tok.Type = Type;
+	Tok.Literal = llvm::StringRef(BufferPtr, TokEnd - BufferPtr);
+	BufferPtr = TokEnd;
 }
 
 void Lexer::printToken(Token Tok) {
-	cout << "{Type: " << Tok.getType() << ", Literal: " << Tok.getType() << "}" << endl;
+	cout << "{Type: " << Tok.getType() << ", Literal: " << Tok.getLiteral().data() << "}" << endl;
 }
