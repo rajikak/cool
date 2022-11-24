@@ -30,8 +30,8 @@ public:
     LT, // "<"
     GT, // ">"
 
-    EQ,    // "=="
-    NOTEQ, // "!"
+    EQ,     // "=="
+    NOT_EQ, // "!="
 
     // delimiters
     COMMA,     // ","
@@ -83,7 +83,8 @@ private:
   const char *BufferStart; // input buffer is a C string ('\0')
   const char *BufferPtr;
 
-  void newToken(Token &Result, const char *TokEnd, Token::TokenType TokenType);
+  void newToken(Token &Tok, const char *TokEnd, Token::TokenType TokenType);
+  void printToken(Token Tok);
 
 public:
   Lexer(const llvm::StringRef &Buffer) {
@@ -92,7 +93,6 @@ public:
   }
 
   void nextToken(Token &Tok);
-  void printToken(Token Tok);
 };
 
 #endif

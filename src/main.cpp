@@ -33,12 +33,12 @@ int main() {
   string content;
   for (const auto &file : filesystem::directory_iterator(path)) {
     content = read(file.path());
-	Lexer Lex(content);
+    Lexer Lex(content);
 
-	Token Tok;
-	//do {
-		Lex.nextToken(Tok);
-		//Lex.printToken(Tok);
-	//} while (Tok.getType() != Token::END_OF_FILE);
+    Token Tok;
+    // do {
+    Lex.nextToken(Tok);
+    // Lex.printToken(Tok);
+    //} while (Tok.getType() != Token::END_OF_FILE);
   }
 }
