@@ -34,6 +34,7 @@ public:
     // delimiters
     COMMA,     // ","
     SEMICOLON, // ";"
+    COLON,     // ":"
 
     LPARAN, // "("
     RPARAN, // ")"
@@ -83,7 +84,6 @@ private:
 
   Token::TokenType lookupIdent(llvm::StringRef ident);
   void newToken(Token &Tok, const char *TokEnd, Token::TokenType TokenType);
-  void printToken(Token Tok);
 
 public:
   Lexer(const llvm::StringRef &Buffer) {
@@ -92,6 +92,7 @@ public:
   }
 
   void nextToken(Token &Tok);
+  void printToken(Token Tok);
 };
 
 #endif

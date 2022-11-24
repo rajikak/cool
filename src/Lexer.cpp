@@ -36,6 +36,7 @@ void Lexer::printToken(Token Tok) {
                                   {Token::COMMA, "comma"},
                                   {Token::SEMICOLON, "semicolon"},
                                   {Token::LPARAN, "leftparan"},
+                                  {Token::COLON, "colon"},
                                   {Token::RPARAN, "rightparan"},
                                   {Token::LBRACE, "leftbrace"},
                                   {Token::RBRACE, "rightbrace"},
@@ -53,8 +54,8 @@ void Lexer::printToken(Token Tok) {
                                   {Token::WHILE, "keyword"},
                                   {Token::CASE, "keyword"}};
 
-  cout << "Type: " << m[Tok.getType()]
-       << ", Literal: " << Tok.getLiteral().str() << endl;
+  cout << "(" << Tok.getLiteral().str() << "," << m[Tok.getType()] << ")"
+       << endl;
 }
 
 Token::TokenType Lexer::lookupIdent(llvm::StringRef ident) {
@@ -94,7 +95,8 @@ void Lexer::nextToken(Token &token) {
 
   // if this is end of file just return that token
   if (!*BufferPtr) {
-    token.Type = Token::END_OF_FILE;
+    newToken(token, BufferPtr, Token::END_OF_FILE);
+    return;
   }
 
   switch (*BufferPtr) {
@@ -117,11 +119,12 @@ void Lexer::nextToken(Token &token) {
     newToken(token, BufferPtr + 1, Token::TIDLE);
     return;
   case '<':
-    if (*(BufferPtr + 2) == '=') {
+    if (*(BufferPtr + 1) == '=') {
       // peek to see if the next character is `=`, so this token is `<=`
       newToken(token, BufferPtr + 2, Token::LT_EQ);
-    } else if (*(BufferPtr + 2) == '-') {
-		newToken(token, BufferPtr + 2, Token::ASSIGN);
+    } else if (*(BufferPtr + 1) == '-') {
+      // peek to see if the next character is `-`, so this token is `<-`
+      newToken(token, BufferPtr + 2, Token::ASSIGN);
     } else {
       newToken(token, BufferPtr + 1, Token::LT);
     }
@@ -138,12 +141,15 @@ void Lexer::nextToken(Token &token) {
   case '}':
     newToken(token, BufferPtr + 1, Token::RBRACE);
     return;
+  case ';':
+    newToken(token, BufferPtr + 1, Token::SEMICOLON);
+    return;
   case ':':
-	newToken(token, BufferPtr + 1, Token::SEMICOLON);
-	return;
+    newToken(token, BufferPtr + 1, Token::COLON);
+    return;
   case ',':
-	newToken(token, BufferPtr + 1, Token::COMMA);
-	return;
+    newToken(token, BufferPtr + 1, Token::COMMA);
+    return;
   default:
     if (charinfo::isLetter(*BufferPtr)) {
       // identifier or a key word
@@ -152,7 +158,6 @@ void Lexer::nextToken(Token &token) {
         ++end;
       llvm::StringRef Literal(BufferPtr, end - BufferPtr);
       newToken(token, end, lookupIdent(Literal));
-      printToken(token);
     } else if (charinfo::isDigit(*BufferPtr)) {
       const char *end = BufferPtr + 1;
       while (charinfo::isDigit(*end))
