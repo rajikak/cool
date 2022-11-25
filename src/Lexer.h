@@ -17,7 +17,8 @@ public:
     END_OF_FILE, // end of file
 
     IDENT,  // identifiers
-    NUMBER, // number
+    INT,    // number
+    STRING, // string
 
     // operators
     PLUS,      //  "+"
