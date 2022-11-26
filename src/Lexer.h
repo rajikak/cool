@@ -15,6 +15,7 @@ public:
   enum TokenType : unsigned short {
     ILLEGAL,     // illegal token
     END_OF_FILE, // end of file
+    COMMENT,     // comment
 
     IDENT,  // identifiers
     INT,    // number

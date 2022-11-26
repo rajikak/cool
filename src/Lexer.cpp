@@ -21,8 +21,8 @@ LLVM_READNONE inline bool isAlphaNumeric(char c) {
 }
 
 LLVM_READNONE inline bool isIdentifier(char c) {
-  return isAlphaNumeric(c) ||
-         c == '_'; // IO class, out_string(), out_int(), in_string(), in_int()
+  return isAlphaNumeric(c) || c == '.' ||
+         c == '_'; // . operator, IO class, out_string(), out_int(), in_string(), in_int()
 }
 } // namespace charinfo
 
@@ -39,14 +39,16 @@ void Lexer::printToken(Token Tok) {
       {Token::RPARAN, "rightparan"},     {Token::LBRACE, "leftbrace"},
       {Token::RBRACE, "rightbrace"},     {Token::CLASS, "keyword"},
       {Token::ELSE, "keyword"},          {Token::FALSE, "keyword"},
+	  {Token::IF, "keyword"},
       {Token::TRUE, "keyword"},          {Token::FI, "keyword"},
       {Token::INHERITS, "keyword"},      {Token::ISVOID, "keyword"},
       {Token::LET, "keyword"},           {Token::LOOP, "keyword"},
       {Token::POOL, "keyword"},          {Token::THEN, "keyword"},
+	  {Token::COMMENT, "comment"},
       {Token::WHILE, "keyword"},         {Token::CASE, "keyword"}};
 
-  cout << "(" << Tok.getLiteral().str() << "," << m[Tok.getType()] << ")"
-       << endl;
+  cout << "[" << Tok.getLiteral().str() << "," << m[Tok.getType()] << "]" <<endl;
+
 }
 
 Token::TokenType Lexer::lookupIdent(llvm::StringRef ident) {
@@ -129,16 +131,32 @@ void Lexer::nextToken(Token &token) {
     return;
 
   case '(':
-	if (*(BufferPtr + 1) == '*') {
-		// ignore comments
-		while(*(BufferPtr + 1) != '*' && *(BufferPtr + 2) != ')')
-			BufferPtr += 1;
-		if (*BufferPtr == '\0'){
-			newToken(token, BufferPtr, Token::ILLEGAL);
-		} 
-	} else {
-    	newToken(token, BufferPtr + 1, Token::LPARAN);
-	}
+    if (*(BufferPtr + 1) == '*') {
+      // skip comments
+      // https://github.com/golang/go/blob/master/src/go/scanner/scanner.go#L889
+      BufferPtr += 1;
+      while (true) {
+        if (*BufferPtr == ')' && *(BufferPtr - 1) == '*') {
+          BufferPtr += 1;
+		  newToken(token, BufferPtr, Token::COMMENT);
+          return;
+        } else {
+          BufferPtr += 1;
+        }
+
+        if (*BufferPtr == '\0') {
+          // guard against infinte loop
+          newToken(token, BufferPtr, Token::ILLEGAL);
+          return;
+        }
+      }
+
+      if (*BufferPtr == '\0') {
+        newToken(token, BufferPtr, Token::ILLEGAL);
+      }
+    } else {
+      newToken(token, BufferPtr + 1, Token::LPARAN);
+    }
     return;
 
   case ')':
