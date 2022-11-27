@@ -7,7 +7,8 @@ default:
 		-std=c++20 src/*.cpp `llvm-config --cxxflags --ldflags --system-libs --libs core` -g -o cool
 
 r: default
-	./cool
+	rm -f l.txt
+	./cool > l.txt
 
 f: # format
 	clang-format -i src/*.cpp src/*.h

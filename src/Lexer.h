@@ -22,21 +22,23 @@ public:
     STRING, // string
 
     // operators
-    PLUS,      //  "+"
+    PLUS,      // "+"
     MINUS,     // "-"
     ASTERRISK, // "*"
     SLASH,     // "/"
-    TIDLE,     // "~"
+    UNARY,     // "~"
 
     ASSIGN, // "<-"
     LT,     // "<"
     LT_EQ,  // "<="
     EQ,     // "="
+    MEMBER, // "=>"
 
     // delimiters
     COMMA,     // ","
     SEMICOLON, // ";"
     COLON,     // ":"
+    PERIOD,    // "."
 
     LPARAN, // "("
     RPARAN, // ")"
@@ -62,6 +64,8 @@ public:
     NEW,
     OF,
     NOT,
+    AT, // "@"
+    SELF,
   };
 
 private:

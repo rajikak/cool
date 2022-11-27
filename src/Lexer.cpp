@@ -22,33 +22,57 @@ LLVM_READNONE inline bool isAlphaNumeric(char c) {
 
 LLVM_READNONE inline bool isIdentifier(char c) {
   return isAlphaNumeric(c) || c == '.' ||
-         c == '_'; // . operator, IO class, out_string(), out_int(), in_string(), in_int()
+         c == '_'; // . operator, IO class, out_string(), out_int(),
+                   // in_string(), in_int()
 }
 } // namespace charinfo
 
 void Lexer::printToken(Token Tok) {
-  map<Token::TokenType, string> m{
-      {Token::ILLEGAL, "illegal token"}, {Token::END_OF_FILE, "eof"},
-      {Token::IDENT, "identtifier"},     {Token::INT, "int"},
-      {Token::STRING, "string"},         {Token::ASSIGN, "operator"},
-      {Token::PLUS, "operator"},         {Token::MINUS, "operator"},
-      {Token::ASTERRISK, "operator"},    {Token::SLASH, "operator"},
-      {Token::LT, "operator"},           {Token::EQ, "operator"},
-      {Token::COMMA, "comma"},           {Token::SEMICOLON, "semicolon"},
-      {Token::LPARAN, "leftparan"},      {Token::COLON, "colon"},
-      {Token::RPARAN, "rightparan"},     {Token::LBRACE, "leftbrace"},
-      {Token::RBRACE, "rightbrace"},     {Token::CLASS, "keyword"},
-      {Token::ELSE, "keyword"},          {Token::FALSE, "keyword"},
-	  {Token::IF, "keyword"},
-      {Token::TRUE, "keyword"},          {Token::FI, "keyword"},
-      {Token::INHERITS, "keyword"},      {Token::ISVOID, "keyword"},
-      {Token::LET, "keyword"},           {Token::LOOP, "keyword"},
-      {Token::POOL, "keyword"},          {Token::THEN, "keyword"},
-	  {Token::COMMENT, "comment"},
-      {Token::WHILE, "keyword"},         {Token::CASE, "keyword"}};
+  map<Token::TokenType, string> m{{Token::ILLEGAL, "illegal token"},
+                                  {Token::END_OF_FILE, "eof"},
+                                  {Token::IDENT, "identtifier"},
+                                  {Token::INT, "int"},
+                                  {Token::STRING, "string"},
+                                  {Token::ASSIGN, "operator"},
+                                  {Token::PLUS, "operator"},
+                                  {Token::MINUS, "operator"},
+                                  {Token::ASTERRISK, "operator"},
+                                  {Token::SLASH, "operator"},
+                                  {Token::LT, "operator"},
+                                  {Token::EQ, "operator"},
+                                  {Token::COMMA, "comma"},
+                                  {Token::SEMICOLON, "semicolon"},
+                                  {Token::LPARAN, "leftparan"},
+                                  {Token::COLON, "colon"},
+                                  {Token::RPARAN, "rightparan"},
+                                  {Token::LBRACE, "leftbrace"},
+                                  {Token::RBRACE, "rightbrace"},
+                                  {Token::CLASS, "keyword"},
+                                  {Token::ELSE, "keyword"},
+                                  {Token::FALSE, "keyword"},
+                                  {Token::IF, "keyword"},
+                                  {Token::TRUE, "keyword"},
+                                  {Token::FI, "keyword"},
+                                  {Token::INHERITS, "keyword"},
+                                  {Token::ISVOID, "keyword"},
+                                  {Token::LET, "keyword"},
+                                  {Token::LOOP, "keyword"},
+                                  {Token::POOL, "keyword"},
+                                  {Token::THEN, "keyword"},
+                                  {Token::COMMENT, "comment"},
+                                  {Token::WHILE, "keyword"},
+                                  {Token::PERIOD, "period"},
+                                  {Token::NEW, "keyword"},
+                                  {Token::OF, "keyword"},
+                                  {Token::NOT, "keyword"},
+                                  {Token::AT, "keyword"},
+                                  {Token::SELF, "keyword"},
+                                  {Token::UNARY, "operator"},
+                                  {Token::MEMBER, "operator"}, // `=>`
+                                  {Token::CASE, "keyword"}};
 
-  cout << "[" << Tok.getLiteral().str() << "," << m[Tok.getType()] << "]" <<endl;
-
+  cout << "[" << Tok.getLiteral().str() << "," << m[Tok.getType()] << "]"
+       << endl;
 }
 
 Token::TokenType Lexer::lookupIdent(llvm::StringRef ident) {
@@ -71,6 +95,7 @@ Token::TokenType Lexer::lookupIdent(llvm::StringRef ident) {
       {"new", Token::NEW},
       {"of", Token::OF},
       {"not", Token::NOT},
+      {"self", Token::SELF},
   };
 
   if (keywords.find(ident.str()) == keywords.end()) {
@@ -92,15 +117,32 @@ void Lexer::nextToken(Token &token) {
     return;
   }
 
+  // scanner loop
+  // https://github.com/golang/go/blob/master/src/go/scanner/scanner.go#L786
   switch (*BufferPtr) {
 
   case '=':
-    newToken(token, BufferPtr + 1, Token::EQ);
-    return;
+    if (*(BufferPtr + 1) == '>') {
+      // peek to see if the next character is `>`, so this token is `=>`
+      newToken(token, BufferPtr + 2, Token::MEMBER);
+    } else {
+      newToken(token, BufferPtr + 1, Token::EQ);
+    }
 
-  case '-':
-    newToken(token, BufferPtr + 1, Token::MINUS);
     return;
+  case '-':
+    if (*(BufferPtr + 1) == '-') {
+      // peek to see if the next character is `-`, so this token is `--`
+      // skip single line comments
+      while (*BufferPtr != '\n')
+        BufferPtr += 1;
+      newToken(token, BufferPtr, Token::COMMENT);
+      return;
+
+    } else {
+      newToken(token, BufferPtr + 1, Token::MINUS);
+      return;
+    }
 
   case '+':
     newToken(token, BufferPtr + 1, Token::PLUS);
@@ -115,7 +157,7 @@ void Lexer::nextToken(Token &token) {
     return;
 
   case '~':
-    newToken(token, BufferPtr + 1, Token::TIDLE);
+    newToken(token, BufferPtr + 1, Token::UNARY);
     return;
 
   case '<':
@@ -138,7 +180,7 @@ void Lexer::nextToken(Token &token) {
       while (true) {
         if (*BufferPtr == ')' && *(BufferPtr - 1) == '*') {
           BufferPtr += 1;
-		  newToken(token, BufferPtr, Token::COMMENT);
+          newToken(token, BufferPtr, Token::COMMENT);
           return;
         } else {
           BufferPtr += 1;
@@ -194,6 +236,14 @@ void Lexer::nextToken(Token &token) {
     }
     return;
   }
+  case '.':
+    newToken(token, BufferPtr + 1, Token::PERIOD);
+    return;
+
+  case '@':
+    newToken(token, BufferPtr + 1, Token::AT);
+    return;
+
   default:
     if (charinfo::isLetter(*BufferPtr)) {
       // identifier or a key word
