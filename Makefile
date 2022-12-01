@@ -12,9 +12,3 @@ r: default
 
 f: # format
 	clang-format -i src/*.cpp src/*.h
-
-fall: # format all
-	find . -regex '.*\.\(cpp\|hpp\|cu\|c\|h\)' -exec clang-format -style=file -i {} \;
-
-debug:   
-	clang++ -std=c++17 -g -O3 src/*.cpp `llvm-config --cxxflags --ldflags --system-libs --libs core` -o cool

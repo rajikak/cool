@@ -29,7 +29,7 @@ LLVM_READNONE inline bool isIdentifier(char c) {
 
 void Lexer::printToken(Token Tok) {
   map<Token::TokenType, string> m{{Token::ILLEGAL, "illegal token"},
-                                  {Token::END_OF_FILE, "eof"},
+                                  {Token::EOI, "EOF/EOI"},
                                   {Token::IDENT, "identtifier"},
                                   {Token::INT, "int"},
                                   {Token::STRING, "string"},
@@ -113,7 +113,7 @@ void Lexer::nextToken(Token &token) {
 
   // if this is end of file just return that token
   if (!*BufferPtr) {
-    newToken(token, BufferPtr, Token::END_OF_FILE);
+    newToken(token, BufferPtr, Token::EOI);
     return;
   }
 

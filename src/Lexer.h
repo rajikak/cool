@@ -14,7 +14,7 @@ class Token {
 public:
   enum TokenType : unsigned short {
     ILLEGAL,     // illegal token
-    END_OF_FILE, // end of file
+    EOI, // end of input/file
     COMMENT,     // comment
 
     IDENT,  // identifiers

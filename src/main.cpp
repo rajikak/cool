@@ -26,12 +26,13 @@ string read(const string file_name) {
   return str;
 }
 
-int main() {
-
-  string path =
-      "/Users/kumarasiri/github/cool-llvm/suite"; // test suite for the compiler
-
+void tokens(string path) {
   for (const auto &file : filesystem::directory_iterator(path)) {
+	
+	if(filesystem::path(file.path()).extension() != ".cl") {
+		continue;
+	}
+
     string content = read(file.path());
     cout << content.c_str();
     Lexer Lex(content.c_str());
@@ -39,6 +40,15 @@ int main() {
     do {
       Lex.nextToken(Tok);
       Lex.printToken(Tok);
-    } while (Tok.getType() != Token::END_OF_FILE);
+    } while (Tok.getType() != Token::EOI);
   }
+}
+
+
+int main() {
+
+  string path =
+      "/Users/kumarasiri/github/cool-llvm/suite"; // test suite for the compiler
+
+  tokens(path);
 }

@@ -9,51 +9,43 @@ class Expr;
 class BinaryOp;
 
 class ASTVisitor {
-	public:
-		virtual void visit(AST &) {};
-		virtual void visit(Expr &) {};
-		virtual void visit(BinaryOp &) = 0;
+public:
+  virtual void visit(AST &){};
+  virtual void visit(Expr &){};
+  virtual void visit(BinaryOp &) = 0;
 };
 
 class AST {
-	public:
-		virtual ~AST() {}
-		virtual void accept(ASTVisitor &V) = 0;
+public:
+  virtual ~AST() {}
+  virtual void accept(ASTVisitor &V) = 0;
+  virtual void tokenLiteral() = 0; // get the token's literal, for debugging purposes
 };
 
-class Expr: public AST {
-	public:
-		Expr() {}
+class Expr : public AST {
+public:
+  Expr() {}
 };
 
 class BinaryOp : public Expr {
-	public:
-		enum Operator {Plus, Minus, Mul, Div};
+public:
+  enum Operator { Plus, Minus, Mul, Div };
 
-	private:
-		Expr *Left;
-		Expr *Right;
-		Operator Op;
+private:
+  Expr *Left;
+  Expr *Right;
+  Operator Op;
 
-	public:
-		BinaryOp(Operator Op, Expr *L, Expr *R)
-			: Op(Op), Left(L), Right(R) {}
+public:
+  BinaryOp(Operator Op, Expr *L, Expr *R) : Op(Op), Left(L), Right(R) {}
 
-		Expr *getLeft() {
-			return Left;
-		}
+  Expr *getLeft() { return Left; }
 
-		Expr *getRight() {
-			return Right;
-		}
+  Expr *getRight() { return Right; }
 
-		Operator getOperator() {
-			return Op;
-		}
+  Operator getOperator() { return Op; }
 
-		virtual void accept(ASTVisitor &V) override {
-			V.visit(*this);
-		}
+  virtual void accept(ASTVisitor &V) override { V.visit(*this); }
 };
-	
+
 #endif
